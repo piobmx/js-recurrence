@@ -7,19 +7,19 @@ import ScrollingBackground from "./ScrollingBackground";
 import { atom, useAtom } from "jotai";
 import { useEffect } from "react";
 
-export const atAtom = atom(0);
+export const controller = atom(0);
 
 function App() {
 	const [count, setCount] = useState(0);
-	const [jotaiTest, setJodaiTest] = useAtom(atAtom);
+	const [jotaiTest, setJodaiTest] = useAtom(controller);
 
 	let ellisPosition = {
 		x: 100,
 		y: jotaiTest,
 	};
-	useEffect(() => {
-		console.log(`jotai: ${jotaiTest}`);
-	}, []);
+	// useEffect(() => {
+	// 	console.log(`jotai: ${jotaiTest}`);
+	// }, []);
 
 	return (
 		<>

@@ -3,7 +3,7 @@ import React, { useEffect, useId, useState } from "react";
 import Sketch from "react-p5";
 import P5 from "p5";
 import { useAtom } from "jotai";
-import { atAtom } from "./App";
+import { controller } from "./App";
 
 let x = 50;
 let y = 50;
@@ -20,7 +20,7 @@ export default (props) => {
 		p5.frameRate(60);
 	};
 
-	const [jotaiTest, setJotaiTest] = useAtom(atAtom);
+	const [jotaiTest, setJotaiTest] = useAtom(controller);
 
 	const dpi = 1000;
 	const wscale = windowWidth / dpi;

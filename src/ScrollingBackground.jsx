@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { useAtom } from "jotai";
-import { atAtom } from "./App"
+import { controller } from "./App"
 
 
 function ScrollingBackground() {
 	const [scrollY, setscrollY] = useState(0);
 	const [scrollHeight, setScrollHeight] = useState(0)
 	const [coordXY, setCoordXY] = useState({ x: 0, y: 0 })
-	const [jotaiTest, setJotaiTest] = useAtom(atAtom)
+	const [jotaiTest, setJotaiTest] = useAtom(controller)
 
 	useEffect(() => {
 		const handleMouseMove = event => {
@@ -15,6 +15,7 @@ function ScrollingBackground() {
 				x: event.clientX,
 				y: event.clientY
 			})
+			setJotaiTest(event.clientY)
 
 		}
 		window.addEventListener('mousemove', handleMouseMove);
@@ -23,7 +24,6 @@ function ScrollingBackground() {
 		const sY = window.scrollY
 		setScrollHeight(sH)
 		setscrollY(sY)
-		setJotaiTest(sY)
 		console.log(`jodai scroll ${jotaiTest}`)
 		
 	})
