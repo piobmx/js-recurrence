@@ -27,8 +27,7 @@ export default (props) => {
 	const hscale = windowHeight / dpi;
 
 	const xt = linspace(-1, 1, dpi);
-	const jj = Math.min(7, Math.floor(jotaiTest / 1000));
-	const epsilon = Math.floor(jotaiTest / 100) / 100;
+	const epsilon = Math.floor(jotaiTest / 100) / 10;
 	console.log("epi", epsilon);
 
 	console.time("cal");
@@ -51,7 +50,7 @@ export default (props) => {
 		// p5.ellipse(props.x, props.y, 70, 50);
 		p5.strokeWeight(10);
 
-		console.time("draw");
+		// console.time("draw");
 		// p5.beginShape(p5.POINTS);
 		for (let i = 0; i < differences.length; i++) {
 			let dl = differences[i];
@@ -82,7 +81,7 @@ export default (props) => {
 		}
 
 		// p5.endShape();
-		console.timeEnd("draw");
+		// console.timeEnd("draw");
 	};
 
 	return <Sketch className={"sketch"} setup={setup} draw={draw} />;
