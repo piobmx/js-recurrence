@@ -15,16 +15,18 @@ function ScrollingBackground() {
 				x: event.clientX,
 				y: event.clientY
 			})
-			setJotaiTest(event.clientY)
+			setJotaiTest({
+				x: event.clientX,
+				y: event.clientY}
+			)
 
 		}
-		window.addEventListener('mousemove', handleMouseMove);
-		window.addEventListener('scroll', handleMouseMove);
+		// window.addEventListener('mousemove', handleMouseMove);
+		// window.addEventListener('scroll', handleMouseMove);
 		const sH = document.documentElement.scrollHeight
 		const sY = window.scrollY
 		setScrollHeight(sH)
 		setscrollY(sY)
-		console.log(`jodai scroll ${jotaiTest}`)
 		
 	})
 

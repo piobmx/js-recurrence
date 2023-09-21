@@ -7,7 +7,7 @@ import ScrollingBackground from "./ScrollingBackground";
 import { atom, useAtom } from "jotai";
 import { useEffect } from "react";
 
-export const controller = atom(0);
+export const controller = atom({x: 0, y: 0});
 
 function App() {
 	const [count, setCount] = useState(0);

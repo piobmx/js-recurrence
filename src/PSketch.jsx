@@ -5,12 +5,15 @@ import P5 from "p5";
 import { useAtom } from "jotai";
 import { controller } from "./App";
 
-let x = 50;
-let y = 50;
-
 export default (props) => {
 	const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 	const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+	const [jotaiTest, setJotaiTest] = useAtom(controller);
+
+	const [polyN, setPolyN] = useState("2");
+	const [polyStep, setPolyStep] = useState(0);
+	const [poly, setPoly] = useState(() => polynomials[polyN]);
+
 	const setup = (p5, canvasParentRef) => {
 		setWindowWidth(p5.windowWidth);
 		setWindowHeight(p5.windowHeight);
@@ -20,38 +23,43 @@ export default (props) => {
 		p5.frameRate(60);
 	};
 
-	const [jotaiTest, setJotaiTest] = useAtom(controller);
 
-	const dpi = 1000;
-	const wscale = windowWidth / dpi;
-	const hscale = windowHeight / dpi;
+	console.log("poly", polyN);
 
-	const xt = linspace(-1, 1, dpi);
-	const epsilon = Math.floor(jotaiTest / 100) / 10;
-	console.log("epi", epsilon);
-
-	console.time("cal");
-	const yt = xt.map((x) => {
-		// const x2 = x * x
-		// const x3 = x * x2
-		// const x5 = x3 * x2
-		// const x7 = x5 * x2
-		// const p = (429*x7 - 693*x5 + 315*x3 - 35*x)
-		// return (1/16) * p
-		return (1 / 8) * (63 * x ** 5 - 70 * x ** 3 + 15 * x);
-	});
-	const differences = computeDifferences(yt, epsilon);
-	console.timeEnd("cal");
-
+	const mouseReleased = () => {
+		const ranks = ["2", "3", "4", "5", "6", "7"];
+		const newStep = (polyStep == ranks.length - 1) ? 0 : polyStep + 1
+		const r = ranks[newStep]
+		console.log("r", r, newStep)
+		
+		setPolyN(r);
+		setPoly(() => polynomials[r]);
+		setPolyStep(newStep)
+	};
 	const draw = (p5) => {
-		const backgroundColor = p5.color(255, 204, 0);
+		const dpi = Math.floor(p5.mouseX);
+		const wscale = windowWidth / dpi;
+		const hscale = windowHeight / dpi;
+
+		const xt = linspace(-1, 1, dpi);
+		const epsilon = p5.mouseY / windowWidth;
+		// console.log("test", dpi);
+		// console.log("epi", epsilon);
+
+		// console.time("cal");
+
+		const yt = xt.map((x) => {
+			return poly(x);
+		});
+		const differences = computeDifferences(yt, epsilon);
+		// console.timeEnd("cal");
+		const backgroundColor = p5.color(134, 124, 112);
 
 		p5.background(backgroundColor);
 		// p5.ellipse(props.x, props.y, 70, 50);
-		p5.strokeWeight(10);
+		p5.strokeWeight(5);
 
 		// console.time("draw");
-		// p5.beginShape(p5.POINTS);
 		for (let i = 0; i < differences.length; i++) {
 			let dl = differences[i];
 			let dll = dl.length;
@@ -72,19 +80,29 @@ export default (props) => {
 				sequences.push([startIndex, dl.length - 1]);
 			}
 
-
 			for (let k = 0; k < sequences.length; k++) {
-				p5.stroke(Math.max(10, i/10));
+				p5.stroke(256 - i * (192 / dpi));
 
-				p5.line(sequences[k][0] * wscale, ih, sequences[k][1] * wscale, ih);
+				p5.line(
+					sequences[k][0] * wscale,
+					ih,
+					sequences[k][1] * wscale,
+					ih,
+				);
 			}
 		}
 
-		// p5.endShape();
 		// console.timeEnd("draw");
 	};
 
-	return <Sketch className={"sketch"} setup={setup} draw={draw} />;
+	return (
+		<Sketch
+			className={"sketch"}
+			setup={setup}
+			draw={draw}
+			mouseReleased={mouseReleased}
+		/>
+	);
 };
 
 const pfive = (props) => {
@@ -146,3 +164,28 @@ function computeDifferences(y, epsilon) {
 
 	return result;
 }
+
+const polynomials = {
+	"2": function (x) {
+		return (1 / 2) * (3 * x ** 2 - 1);
+	},
+	"3": function (x) {
+		return (1 / 2) * (5 * x ** 3 - 3 * x);
+	},
+	"4": function (x) {
+		return (1 / 8) * (35 * x ** 4 - 30 * x ** 2 + 3);
+	},
+	"5": function (x) {
+		return (1 / 8) * (63 * x ** 5 - 70 * x ** 3 + 15 * x);
+	},
+	"6": function (x) {
+		return (1 / 16) * (231 * x ** 6 - 315 * x ** 4 + 105 * x ** 2 - 5);
+	},
+	"7": function (x) {
+		const x2 = x * x;
+		const x3 = x * x2;
+		const x5 = x3 * x2;
+		const x7 = x5 * x2
+		return (1 / 16) * (429*x7 -693*x5 + 315 * x3 - 35*x);
+	},
+};
