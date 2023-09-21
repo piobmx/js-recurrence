@@ -44,7 +44,7 @@ export default (props) => {
 
 		// const xt = linspace(-1, 1, dpi);
 		const xt = linspace(0, 1, dpi);
-		const epsilon = p5.mouseY / windowHeight
+		const epsilon = (p5.mouseY / windowHeight) ** 3
 		// console.log("test", dpi);
 		// console.log("epi", epsilon);
 
