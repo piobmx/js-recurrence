@@ -26,7 +26,7 @@ export default (props) => {
 
 	console.log("poly", polyN);
 
-	const mouseReleased = () => {
+	const mouseClicked= () => {
 		const ranks = ["2", "3", "4", "5", "6", "7"];
 		const newStep = (polyStep == ranks.length - 1) ? 0 : polyStep + 1
 		const r = ranks[newStep]
@@ -101,7 +101,7 @@ export default (props) => {
 			className={"sketch"}
 			setup={setup}
 			draw={draw}
-			mouseReleased={mouseReleased}
+			mouseClicked={mouseClicked}
 		/>
 	);
 };
