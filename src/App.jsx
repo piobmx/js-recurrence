@@ -24,7 +24,7 @@ function App() {
 	return (
 		<>
 			<Sketch {...ellisPosition} />
-			<ScrollingBackground />
+			{/* <ScrollingBackground /> */}
 			{/* <WorkingDemonstration height={200} width={400} /> */}
 		</>
 	);
