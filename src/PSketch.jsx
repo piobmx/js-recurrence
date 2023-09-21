@@ -36,13 +36,14 @@ export default (props) => {
 		setPoly(() => polynomials[r]);
 		setPolyStep(newStep)
 	};
+
 	const draw = (p5) => {
 		const dpi = Math.floor(p5.mouseX);
 		const wscale = windowWidth / dpi;
 		const hscale = windowHeight / dpi;
 
 		const xt = linspace(-1, 1, dpi);
-		const epsilon = p5.mouseY / windowWidth;
+		const epsilon = p5.mouseY / windowHeight
 		// console.log("test", dpi);
 		// console.log("epi", epsilon);
 
