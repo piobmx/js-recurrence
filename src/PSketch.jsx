@@ -42,7 +42,8 @@ export default (props) => {
 		const wscale = windowWidth / dpi;
 		const hscale = windowHeight / dpi;
 
-		const xt = linspace(-1, 1, dpi);
+		// const xt = linspace(-1, 1, dpi);
+		const xt = linspace(0, 1, dpi);
 		const epsilon = p5.mouseY / windowHeight
 		// console.log("test", dpi);
 		// console.log("epi", epsilon);
@@ -166,9 +167,17 @@ function computeDifferences(y, epsilon) {
 	return result;
 }
 
+const pi = Math.PI
+const sin = Math.sin
 const polynomials = {
 	"2": function (x) {
-		return (1 / 2) * (3 * x ** 2 - 1);
+		// return (1 / 2) * (3 * x ** 2 - 1);
+		const N = 1
+		const a = 0.5
+		const p = 30
+		const b = sin(p * pi * ((x - 0.5 * N)/N))
+		const c = p * pi  * ((x - 0.5 * N)/N)
+		return a * b / c
 	},
 	"3": function (x) {
 		return (1 / 2) * (5 * x ** 3 - 3 * x);
