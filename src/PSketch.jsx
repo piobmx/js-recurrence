@@ -39,7 +39,7 @@ export default (props) => {
 	const draw = (p5) => {
 		p5.clear();
 		// const dpi = Math.floor(windowHeight - p5.mouseX);
-		const dpi = 1600;
+		const dpi = 600;
 		const wscale = windowWidth / dpi;
 		const hscale = windowHeight / dpi;
 
