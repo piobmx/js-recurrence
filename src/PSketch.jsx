@@ -10,43 +10,45 @@ export default (props) => {
 	const [windowHeight, setWindowHeight] = useState(window.innerHeight);
 	const [jotaiTest, setJotaiTest] = useAtom(controller);
 
-	const [polyN, setPolyN] = useState("2");
+	const [polyN, setPolyN] = useState("1");
 	const [polyStep, setPolyStep] = useState(0);
 	const [poly, setPoly] = useState(() => polynomials[polyN]);
+	let canvas;
 
 	const setup = (p5, canvasParentRef) => {
 		setWindowWidth(p5.windowWidth);
 		setWindowHeight(p5.windowHeight);
-		p5.createCanvas(p5.windowWidth, p5.windowHeight).parent(
+		canvas = p5.createCanvas(p5.windowWidth, p5.windowHeight).parent(
 			canvasParentRef,
 		);
+		canvas.style("z-index", "-1");
+
 		p5.frameRate(60);
 	};
 
+	const mouseClicked = () => {
+		const ranks = ["1", "2", "3", "4", "5", "6", "7"];
+		const newStep = (polyStep == ranks.length - 1) ? 0 : polyStep + 1;
+		const r = ranks[newStep];
 
-	console.log("poly", polyN);
-
-	const mouseClicked= () => {
-		const ranks = ["2", "3", "4", "5", "6", "7"];
-		const newStep = (polyStep == ranks.length - 1) ? 0 : polyStep + 1
-		const r = ranks[newStep]
-		console.log("r", r, newStep)
-		
 		setPolyN(r);
 		setPoly(() => polynomials[r]);
-		setPolyStep(newStep)
+		setPolyStep(newStep);
 	};
 
 	const draw = (p5) => {
-		const dpi = Math.floor(p5.mouseX);
+		p5.clear();
+		// const dpi = Math.floor(windowHeight - p5.mouseX);
+		const dpi = 1600;
 		const wscale = windowWidth / dpi;
 		const hscale = windowHeight / dpi;
 
 		// const xt = linspace(-1, 1, dpi);
 		const xt = linspace(0, 1, dpi);
-		const epsilon = (p5.mouseY / windowHeight) ** 3
-		// console.log("test", dpi);
-		// console.log("epi", epsilon);
+		const epsilonBase = Math.abs(p5.mouseY - windowHeight / 2) /
+			(windowHeight / 2);
+		const epsilon = epsilonBase ** (4);
+		// const epsilon = (Math.pow(10, epsilonBase) - 1 ) / 10
 
 		// console.time("cal");
 
@@ -55,11 +57,12 @@ export default (props) => {
 		});
 		const differences = computeDifferences(yt, epsilon);
 		// console.timeEnd("cal");
-		const backgroundColor = p5.color(134, 124, 112);
+		const backgroundColor = p5.color(134, 124, 112, 0);
 
 		p5.background(backgroundColor);
 		// p5.ellipse(props.x, props.y, 70, 50);
-		p5.strokeWeight(5);
+		p5.strokeWeight(3);
+		p5.strokeJoin(p5.ROUND);
 
 		// console.time("draw");
 		for (let i = 0; i < differences.length; i++) {
@@ -83,14 +86,17 @@ export default (props) => {
 			}
 
 			for (let k = 0; k < sequences.length; k++) {
-				p5.stroke(256 - i * (192 / dpi));
+				p5.stroke(256 - i * (232/ dpi));
+				const lineWidth =sequences[k][1] - sequences[k][0];
+				if (lineWidth > 1) {
 
-				p5.line(
-					sequences[k][0] * wscale,
-					ih,
-					sequences[k][1] * wscale,
-					ih,
-				);
+					p5.line(
+						sequences[k][0] * wscale,
+						ih,
+						sequences[k][1] * wscale,
+						ih,
+					);
+				}
 			}
 		}
 
@@ -158,26 +164,42 @@ function computeDifferences(y, epsilon) {
 	const n = y.length;
 	const result = Array.from({ length: n }, () => Array(n).fill(false));
 
+	console.time("dif")
 	for (let i = 0; i < n; i++) {
 		for (let j = 0; j < n; j++) {
 			result[i][j] = Math.abs(y[i] - y[j]) < epsilon;
 		}
 	}
+	console.timeEnd("dif")
 
 	return result;
 }
 
-const pi = Math.PI
-const sin = Math.sin
+const pi = Math.PI;
+const sin = Math.sin;
 const polynomials = {
+	"1": function (x) {
+		const N = 12; // number of points
+		const a = .1; // amplitude
+		const b = 10; // periods
+		const k = 3; // number of members of series
+		const c = (4 * a) / (pi);
+		let sum = 0;
+		for (let n = 0; n < k; n++) {
+			let p = sin((2 * n - 1) * (2 * b * pi) / N * x);
+			let q = 2 * n - 1;
+			sum = sum + p / q;
+		}
+		return sum * c;
+	},
 	"2": function (x) {
 		// return (1 / 2) * (3 * x ** 2 - 1);
-		const N = 1
-		const a = 0.5
-		const p = 30
-		const b = sin(p * pi * ((x - 0.5 * N)/N))
-		const c = p * pi  * ((x - 0.5 * N)/N)
-		return a * b / c
+		const N = 1;
+		const a = 1;
+		const p = 25;
+		const b = sin(p * pi * ((x - 0.5 * N) / N));
+		const c = p * pi * ((x - 0.5 * N) / N);
+		return a * b / c;
 	},
 	"3": function (x) {
 		return (1 / 2) * (5 * x ** 3 - 3 * x);
@@ -195,7 +217,7 @@ const polynomials = {
 		const x2 = x * x;
 		const x3 = x * x2;
 		const x5 = x3 * x2;
-		const x7 = x5 * x2
-		return (1 / 16) * (429*x7 -693*x5 + 315 * x3 - 35*x);
+		const x7 = x5 * x2;
+		return (1 / 16) * (429 * x7 - 693 * x5 + 315 * x3 - 35 * x);
 	},
 };
