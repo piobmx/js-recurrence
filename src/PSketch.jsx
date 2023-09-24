@@ -38,8 +38,8 @@ export default (props) => {
 
 	const draw = (p5) => {
 		p5.clear();
-		// const dpi = Math.floor(windowHeight - p5.mouseX);
-		const dpi = 600;
+		const dpi = Math.floor(windowHeight - p5.mouseX);
+		// const dpi = 600;
 		const wscale = windowWidth / dpi;
 		const hscale = windowHeight / dpi;
 
@@ -58,13 +58,19 @@ export default (props) => {
 		const differences = computeDifferences(yt, epsilon);
 		// console.timeEnd("cal");
 		const backgroundColor = p5.color(134, 124, 112, 0);
+		const lineColor = p5.color(111, 124, 243, 0);
 
 		p5.background(backgroundColor);
 		// p5.ellipse(props.x, props.y, 70, 50);
-		p5.strokeWeight(3);
-		p5.strokeJoin(p5.ROUND);
+		p5.strokeWeight(4);
+
+		// p5.strokeJoin(p5.ROUND);
+		// p5.noStroke()
+		// p5.strokeCap(p5.ROUND);
 
 		// console.time("draw");
+		// p5.beginShape();
+
 		for (let i = 0; i < differences.length; i++) {
 			let dl = differences[i];
 			let dll = dl.length;
@@ -86,10 +92,14 @@ export default (props) => {
 			}
 
 			for (let k = 0; k < sequences.length; k++) {
-				p5.stroke(256 - i * (232/ dpi));
-				const lineWidth =sequences[k][1] - sequences[k][0];
+				// if (k < 100) {
+				// 	p5.stroke(123);
+				// 	p5.curveVertex(sequences[k][0] * wscale, ih);
+				// 	p5.curveVertex(sequences[k][1] * wscale, ih);
+				// }
+				p5.stroke(256 - i * (232 / dpi));
+				const lineWidth = sequences[k][1] - sequences[k][0];
 				if (lineWidth > 1) {
-
 					p5.line(
 						sequences[k][0] * wscale,
 						ih,
@@ -99,6 +109,8 @@ export default (props) => {
 				}
 			}
 		}
+
+		// p5.endShape();
 
 		// console.timeEnd("draw");
 	};
@@ -164,13 +176,13 @@ function computeDifferences(y, epsilon) {
 	const n = y.length;
 	const result = Array.from({ length: n }, () => Array(n).fill(false));
 
-	console.time("dif")
+	console.time("dif");
 	for (let i = 0; i < n; i++) {
 		for (let j = 0; j < n; j++) {
 			result[i][j] = Math.abs(y[i] - y[j]) < epsilon;
 		}
 	}
-	console.timeEnd("dif")
+	console.timeEnd("dif");
 
 	return result;
 }
